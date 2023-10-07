@@ -221,6 +221,9 @@ namespace BookFlix.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Kenadam")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -236,9 +239,6 @@ namespace BookFlix.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalPrice")
-                        .HasColumnType("int");
-
-                    b.Property<int>("buyPrice")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

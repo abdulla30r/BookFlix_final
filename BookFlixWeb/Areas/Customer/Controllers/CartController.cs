@@ -159,10 +159,10 @@ namespace BookFlixWeb.Areas.Customer.Controllers
                 {
                     BookId = cart.ProductId,
                     Quantity = sale.Quantity,
-                    Price = cart.Product.buyPrice,
+                    Price = cart.Product.Kenadam,
                     SalePrice = sale.Price,
                     BookName = cart.Product.Title,
-                    Lav = (sale.Price - cart.Product.buyPrice) * sale.Quantity,
+                    Lav = (sale.Price - cart.Product.Kenadam) * sale.Quantity,
                 };
 
                 cart.Product.Quantity = cart.Product.Quantity - sale.Quantity;

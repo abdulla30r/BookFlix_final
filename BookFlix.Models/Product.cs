@@ -15,6 +15,7 @@ namespace BookFlix.Models
     {
         [Key]
         public int Id { get; set; }
+        public int Kenadam { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -26,8 +27,6 @@ namespace BookFlix.Models
 
         [Required]
         public string Author { get; set; }
-
-        public int buyPrice { get; set; }
 
         public int Price { get; set; }
 

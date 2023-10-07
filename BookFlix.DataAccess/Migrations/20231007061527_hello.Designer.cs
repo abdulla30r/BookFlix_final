@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookFlix.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231007040856_productFixed")]
-    partial class productFixed
+    [Migration("20231007061527_hello")]
+    partial class hello
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,6 +224,9 @@ namespace BookFlix.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Kenadam")
+                        .HasColumnType("int");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -239,9 +242,6 @@ namespace BookFlix.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalPrice")
-                        .HasColumnType("int");
-
-                    b.Property<int>("buyPrice")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

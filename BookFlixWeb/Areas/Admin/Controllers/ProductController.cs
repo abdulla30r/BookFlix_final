@@ -56,15 +56,15 @@ namespace BookFlixWeb.Areas.Admin.Controllers
             {
                 product.Quantity = obj.Product.Quantity + product.Quantity;
                 product.TotalPrice = obj.Product.TotalPrice + product.TotalPrice;
-                product.buyPrice = product.TotalPrice / product.Quantity;
-                product.Price =(int)(product.buyPrice + 0.2 * product.buyPrice);
+                product.Kenadam = product.TotalPrice / product.Quantity;
+                product.Price =(int)(product.Kenadam + 0.2 * product.Kenadam);
                 _unitOfWork.Product.Update(product);
                 _unitOfWork.Save();
                 TempData["success"] = "Stock Added Successfully";
 
                 Balance balance1 = _context.Balances.FirstOrDefault(u => u.BookId == product.Id);
                 balance1.Quantity = product.Quantity;
-                balance1.UnitPrice = product.buyPrice;
+                balance1.UnitPrice = product.Kenadam;
                 _context.Balances.Update(balance1);
 
                 Purchase ppp = new Purchase()
@@ -107,8 +107,8 @@ namespace BookFlixWeb.Areas.Admin.Controllers
                 }
             }
 
-            obj.Product.buyPrice = obj.Product.TotalPrice / obj.Product.Quantity;
-            obj.Product.Price = (int)(obj.Product.buyPrice + obj.Product.buyPrice * 0.2);
+            obj.Product.Kenadam = obj.Product.TotalPrice / obj.Product.Quantity;
+            obj.Product.Price = (int)(obj.Product.Kenadam + obj.Product.Kenadam * 0.2);
             _unitOfWork.Product.Add(obj.Product);
             TempData["success"] = "Product Created Successfully";
             _unitOfWork.Save();
@@ -139,7 +139,7 @@ namespace BookFlixWeb.Areas.Admin.Controllers
                 BookId = myProduct.Id,
                 BookName = obj.Product.Title,
                 Quantity = myProduct.Quantity,
-                UnitPrice = myProduct.buyPrice
+                UnitPrice = myProduct.Kenadam
             };
 
             _context.Balances.Add(balance);

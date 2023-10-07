@@ -28,7 +28,7 @@ namespace BookFlix.DataAccess.Repository
                 objFromDb.ISBN = obj.ISBN;
                 objFromDb.TotalPrice = obj.TotalPrice;
                 objFromDb.Quantity = obj.Quantity;
-                objFromDb.buyPrice = obj.TotalPrice / obj.Quantity;
+                objFromDb.Kenadam = obj.TotalPrice / obj.Quantity;
                 objFromDb.CategoryId = obj.CategoryId;
                 objFromDb.Author = obj.Author;
                 if (obj.ImageUrl != null)

@@ -58,7 +58,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             IEnumerable<OrderDetails> orderDetails = _unitOfWork.OrderDetails.GetAll(includeProperties: "Product").Where(u => u.OrderId == id);
             OrderHeader orderHeader = _unitOfWork.OrderHeaders.GetFirstOrDefault(u => u.Id == id);
 
-            var domain = "https://localhost:44340/";
+            var domain = "http://bookflix-001-site1.ctempurl.com/";
             var options = new SessionCreateOptions
             {
 
