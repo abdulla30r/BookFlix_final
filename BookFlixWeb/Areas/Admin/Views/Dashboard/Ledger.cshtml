@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Ledger>
+<br />
+<br />
+<div class="container">
+
+<div class="col-6">
+    <h2 class="text-primary">Ledger List</h2>
+</div>
+<table class="table table-bordered table-striped" style="margin:auto" id="tableToPrint">
+    <thead>
+        <tr>
+            <th>
+                Serial No.
+            </th>
+            <th>Date</th>
+            <th>
+                Book Id
+            </th>
+            <th>Quantity</th>
+            <th>Debit</th>
+            <th>Credit</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>
+                    @obj.SerialNo
+                </td>
+                <td>
+                    @obj.Date
+                </td>
+                <td>
+                    @obj.BookId
+                </td>
+                <td>
+                    @obj.Quantity
+                </td>
+                <td>
+                    @obj.Debit
+                </td>
+                <td>
+                    @obj.Credit
+                </td>
+
+                
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+<button class="btn btn-primary" onclick="printTable()">Print Table</button>
+
+</div>
+<script>
+    function printTable() {
+        var table = document.getElementById("tableToPrint").outerHTML;
+        var textToPrint = "<h2 class='text-primary'>Ledger list</h2>";
+        var newWin = window.open('', 'Print-Window');
+        newWin.document.open();
+        newWin.document.write(textToPrint);
+        newWin.document.write(table);
+        newWin.document.close();
+        newWin.print();
+        newWin.close();
+    }
+</script>

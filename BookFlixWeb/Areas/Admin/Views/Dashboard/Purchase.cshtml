@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Purchase>
+
+<br />
+<br />
+<div class="container">
+<div class="col-6">
+    <h2 class="text-primary">Purchase List</h2>
+</div>
+<table class="table table-bordered table-striped" style="margin:auto" id="tableToPrint">
+    <thead>
+        <tr>
+            <th>
+                Voucher No.
+            </th>
+            <th>Date</th>
+            <th>
+                Book Id
+            </th>
+            <th>Book Name</th>
+
+            <th>Quantity</th>
+            <th>Total Price</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>
+                    @obj.Id
+                </td>
+                <td>
+                    @obj.Date
+                </td>
+                <td>
+                    @obj.BookId
+                </td>
+                <td>
+                    @obj.BookName
+                </td>
+                <td>
+                    @obj.Quantity
+                </td>
+                <td>
+                    @obj.TotalPrice
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br />
+<button class="btn btn-primary" onclick="printTable()">Print Table</button>
+</div>
+
+<script>
+    function printTable() {
+        var table = document.getElementById("tableToPrint").outerHTML;
+        var textToPrint = "<h2 class='text-primary'>Purchase list</h2>";
+        var newWin = window.open('', 'Print-Window');
+        newWin.document.open();
+        newWin.document.write(textToPrint);
+        newWin.document.write(table);
+        newWin.document.close();
+        newWin.print();
+        newWin.close();
+    }
+</script>

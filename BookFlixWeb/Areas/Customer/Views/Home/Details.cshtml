@@ -1,0 +1,89 @@
+﻿@model ShoppingCart
+
+@using BookFlix.Models;
+@using BookFlix.Models.ViewModels;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@inject UserManager<ApplicationUser> UserManager
+@{
+    ViewData["Title"] = "Details";
+}
+<partial name="_Notification" />
+
+
+<form method="post" asp-action="Details">
+    <input asp-for="@Model.ProductId" hidden />
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4" style="text-align:center">
+                <img src="@Model.Product.ImageUrl" class="img-fluid" alt="Book Image" style="height:500px;width:auto">
+            </div>
+            <div class="col-md-8">
+                <h2>@Model.Product.Title</h2>
+                <p><strong>Author: @Model.Product.Author</strong></p>
+                <p><strong>Publisher: @Model.Product.Publisher</strong></p>
+                <p><strong>Category: @Model.Product.Category.Name</strong></p>
+                <p><strong>ISBN: @Model.Product.ISBN</strong></p>
+                <br />
+                <p><strong>Stock: @Model.Product.Quantity</strong></p>
+                <p><strong>Price: @Model.Product.Price TK</strong></p>
+
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" class="form-control" asp-for="Count" placeholder="Enter quantity" min="1" id="quantityInput">
+                    </div>
+
+                    <div class="form-group col-6">
+                        <label for="totalPrice">Total Price:</label>
+                        <input type="text" class="form-control" id="totalPrice" readonly>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-6">
+                        <button class="btn btn-primary w-100" type="submit">Add to Cart</button>
+                    </div>
+                    <div class="col-6">
+                        <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="btn btn-secondary w-100">Go Back</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-10" style="padding-left:4%">
+                <h3>Product Description</h3>
+                <p>
+                    @Model.Product.Description
+                </p>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+<script>
+    // Get references to the quantity input and total price input
+    var quantityInput = document.getElementById('quantityInput');
+    var totalPriceInput = document.getElementById('totalPrice');
+
+    // Function to calculate and update the total price
+    function updateTotalPrice() {
+        var quantity = parseInt(quantityInput.value);
+        var price = parseFloat("@(Model.Product.Price)"); // Parse the integer product price
+
+        // Calculate the total price
+        var totalPrice = quantity * price;
+
+        // Update the total price input field
+        totalPriceInput.value = totalPrice.toFixed(2); // Assuming you want 2 decimal places
+    }
+
+    // Add an event listener to the quantity input to update the total price when it changes
+    quantityInput.addEventListener('input', updateTotalPrice);
+
+    // Initialize the total price when the page loads
+    updateTotalPrice();
+</script>

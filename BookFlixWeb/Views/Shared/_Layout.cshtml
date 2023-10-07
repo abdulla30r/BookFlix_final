@@ -1,0 +1,121 @@
+﻿@using BookFlix.Models.ViewModels;
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BookFlix</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/js/" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/BookFlixWeb.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom bg-white box-shadow mb-3">
+            <div class="container-fluid container">
+                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
+                    Book<strong style="color:red;">Flix</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                        </li>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Seller"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Manage</a>
+                                <ul class="dropdown-menu">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a></li>
+
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Sale">Sales</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Profit</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Balance">Balance</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Purchase">Purchase</a></li>
+                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Ledger">Ledger</a></li>
+
+                                    }
+
+                                    
+                                </ul>
+
+                            </li>
+                        }
+
+                        
+
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="MyOrder" asp-action="Index">My Order</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div>
+        <main role="main" style="margin-top:-20px;margin-bottom:160px;">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a asp-action="Index" asp-area="Customer" asp-controller="Home">
+                        <h4 class="text-primary mt-2"><span class="text-primary">book</span><span style="color:red;">Flix</span></h4>
+                    </a>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h5 class="mt-2">Contact Us</h5>
+                    <address style="margin-top:-25px;">623 Harrison St., 2nd Floor, San Francisco, CA 94107</address>
+                    <div style="margin-top:-50px;">
+                        Phone: +8801813830083
+                    </div>
+                    <div style="margin-top:-40px; margin-bottom:-20px">
+                        Email: hello@BookFlix.com
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <h5 class="mt-2">Useful Links</h5>
+                    <div style="height:10px;margin-top:-20px">
+                        <a class="text-primary" asp-action="aboutus" asp-area="Customer" asp-controller="Home">About Us</a>
+                    </div>
+                    <div style="height:10px;margin-top:10px">
+                        <a href="https://www.tracking.sundarbancourierltd.com/">Track Your Order</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            &copy; 2023 - All Rights Reserved
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

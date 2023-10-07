@@ -1,0 +1,74 @@
+﻿@using BookFlix.Models.ViewModels;
+@model IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<partial name="_Notification" />
+
+<br/>
+<br />
+
+<div class="container ">
+
+    <div class="row">
+        @foreach (var obj in Model.ProductList)
+        {
+            <div class="col-6 col-md-4 col-lg-3">
+                <a href="@Url.Action("Details", "Home", new { id = obj.Id })">
+                    <div class=" mb-4" style="text-align:center">
+                        <div class="image-container">
+                            <img src="@obj.ImageUrl" class="card-img-top image" style="height:200px;width:150px;" alt="Product Image">
+                        </div>
+                        <p>@obj.Title</p>
+                        <p style="margin-top:-20px"><strong>Tk. </strong>@(obj.Price)</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+
+<style>
+    .headerSection{
+        height:92vh;
+    }
+
+    .image-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .image {
+        transition: transform 0.3s ease;
+    }
+
+    .image-container:hover .image {
+        transform: scale(1.05);
+    }
+
+    .image-container img {
+        height: 200px;
+        width: 150px;
+    }    
+</style>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.bxslider').bxSlider({
+                auto: true,
+                mode: 'fade',
+                speed: 1000, // Adjust the transition speed
+                pause: 5000, // Adjust the pause between slides
+                controls: false, // Set to true if you want to display prev/next controls
+                pager: true // Set to true if you want to display pager
+            });
+        });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+
+
+
