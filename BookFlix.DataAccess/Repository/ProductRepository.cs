@@ -26,6 +26,7 @@ namespace BookFlix.DataAccess.Repository
                 objFromDb.Description = obj.Description;
                 objFromDb.Category = obj.Category;
                 objFromDb.ISBN = obj.ISBN;
+                objFromDb.Publisher = obj.Publisher;
                 objFromDb.TotalPrice = obj.TotalPrice;
                 objFromDb.Quantity = obj.Quantity;
                 objFromDb.Kenadam = obj.TotalPrice / obj.Quantity;

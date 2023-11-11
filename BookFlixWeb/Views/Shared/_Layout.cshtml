@@ -31,39 +31,34 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Index">Home |</a>
                         </li>
                         <li class="nav-item">
                         </li>
-                        @if (User.IsInRole("Admin") || User.IsInRole("Seller"))
+                        
+
+                        
+                        @if (User.IsInRole("Customer"))
                         {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Manage</a>
-                                <ul class="dropdown-menu">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a></li>
-
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Sale">Sales</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Profit</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Balance">Balance</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Purchase">Purchase</a></li>
-                                    <li><a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Ledger">Ledger</a></li>
-
-                                    }
-
-                                    
-                                </ul>
-
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Customer" asp-controller="MyOrder" asp-action="Index">My Order</a>
                             </li>
                         }
 
-                        
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Category" asp-action="Index">Category |</a></li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="MyOrder" asp-action="Index">My Order</a>
-                        </li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Product" asp-action="Index">Product |</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Sale">Sales |</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Profit |</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Balance">Balance |</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Purchase">Purchase |</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Ledger">Ledger |</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Admin" asp-controller="ManageOrder" asp-action="Index">Manage Order</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -93,15 +88,6 @@
                     </div>
                     <div style="margin-top:-40px; margin-bottom:-20px">
                         Email: hello@BookFlix.com
-                    </div>
-                </div>
-                <div class="col-md-4 text-end">
-                    <h5 class="mt-2">Useful Links</h5>
-                    <div style="height:10px;margin-top:-20px">
-                        <a class="text-primary" asp-action="aboutus" asp-area="Customer" asp-controller="Home">About Us</a>
-                    </div>
-                    <div style="height:10px;margin-top:10px">
-                        <a href="https://www.tracking.sundarbancourierltd.com/">Track Your Order</a>
                     </div>
                 </div>
             </div>

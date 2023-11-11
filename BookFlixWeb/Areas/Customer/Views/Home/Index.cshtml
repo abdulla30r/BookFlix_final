@@ -6,17 +6,31 @@
 
 <partial name="_Notification" />
 
-<br/>
+<br />
 <br />
 
-<div class="container ">
+<div class="container">
 
+    <div class="row justify-content-center">
+        <div class="col-6">
+            <form method="post" asp-action="Search">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="searchQuery" placeholder="Search products">
+                    <div class="input-group-append ms-3">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <br/>
     <div class="row">
         @foreach (var obj in Model.ProductList)
         {
             <div class="col-6 col-md-4 col-lg-3">
                 <a href="@Url.Action("Details", "Home", new { id = obj.Id })">
-                    <div class=" mb-4" style="text-align:center">
+                    <div class="mb-4" style="text-align:center">
                         <div class="image-container">
                             <img src="@obj.ImageUrl" class="card-img-top image" style="height:200px;width:150px;" alt="Product Image">
                         </div>
@@ -29,10 +43,9 @@
     </div>
 </div>
 
-
 <style>
-    .headerSection{
-        height:92vh;
+    .headerSection {
+        height: 92vh;
     }
 
     .image-container {
@@ -51,24 +64,25 @@
     .image-container img {
         height: 200px;
         width: 150px;
-    }    
+    }
 </style>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
 
-
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('.bxslider').bxSlider({
-                auto: true,
-                mode: 'fade',
-                speed: 1000, // Adjust the transition speed
-                pause: 5000, // Adjust the pause between slides
-                controls: false, // Set to true if you want to display prev/next controls
-                pager: true // Set to true if you want to display pager
-            });
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.bxslider').bxSlider({
+            auto: true,
+            mode: 'fade',
+            speed: 1000, // Adjust the transition speed
+            pause: 5000, // Adjust the pause between slides
+            controls: false, // Set to true if you want to display prev/next controls
+            pager: true // Set to true if you want to display pager
         });
-    </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    
-
-
-
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>

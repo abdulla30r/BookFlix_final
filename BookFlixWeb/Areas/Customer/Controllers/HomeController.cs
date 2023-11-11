@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -23,6 +24,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             IEnumerable<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
@@ -35,6 +37,31 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             };
 
             return View(indexModel);
+        }
+
+        [HttpPost]
+        public IActionResult Search()
+        {
+            string searchQuery = Request.Form["searchQuery"];
+            IEnumerable<Product> objProductList;
+
+            if (string.IsNullOrWhiteSpace(searchQuery))
+            {
+                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
+               .OrderBy(x => Guid.NewGuid());
+            }
+            else
+            {
+                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
+                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var indexModel = new IndexModel
+            {
+                ProductList = objProductList,
+            };
+
+            return View("Index", indexModel);
         }
 
         //get
