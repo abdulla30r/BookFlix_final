@@ -76,10 +76,20 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
+                string userName = user.FirstName;
+                var mailBody = $@"
+    <p>Dear {userName},</p>
+    <p>We received a request to reset your password on BookFlix.</p>
+    <p>To reset your password, please click the following link:</p>
+    <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Reset Your Password</a></p>
+    <p>If you did not request a password reset, you can safely ignore this email.</p>
+    <p>Thank you for using BookFlix!</p>
+";
+
                 await SendEmailAsync(
                     Input.Email,
                     "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    mailBody);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
@@ -92,14 +102,14 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
             try
             {
                 var mail = new MimeMessage();
-                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.From.Add(MailboxAddress.Parse("bookflix247@gmail.com"));
                 mail.To.Add(MailboxAddress.Parse(email));
                 mail.Subject = subject;
                 mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
 
                 using var smtp = new SmtpClient();
                 smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Authenticate("bookflix247@gmail.com", "jnmk rnop elet trcp");
                 smtp.Send(mail);
                 smtp.Disconnect(true);
 

@@ -210,8 +210,15 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
+                    var mailBody = $@"
+    <p>Dear {user.FirstName},</p>
+    <p>Thanks for creating an account on BookFlix.</p>
+    <p>To verify your email, please click the following link:</p>
+    <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Verify Email</a></p>
+    <p>Thank you for using BookFlix!</p>";
+
                     await SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        mailBody);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -246,14 +253,14 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
             try
             {
                 var mail = new MimeMessage();
-                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.From.Add(MailboxAddress.Parse("bookflix247@gmail.com"));
                 mail.To.Add(MailboxAddress.Parse(email));
                 mail.Subject = subject;
                 mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
 
                 using var smtp = new SmtpClient();
                 smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Authenticate("bookflix247@gmail.com", "jnmk rnop elet trcp");
                 smtp.Send(mail);
                 smtp.Disconnect(true);
 

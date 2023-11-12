@@ -76,15 +76,27 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+            
+
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
+
+            var mailBody = $@"
+    <p>Dear {user.FirstName},</p>
+    <p>Thanks for creating an account on BookFlix.</p>
+    <p>To verify your email, please click the following link:</p>
+    <p><a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Verify Email</a></p>
+    <p>Thank you for using BookFlix!</p>
+";
+
             await SendEmailAsync(
                 Input.Email,
                 "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                mailBody);
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();
@@ -95,14 +107,14 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
             try
             {
                 var mail = new MimeMessage();
-                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.From.Add(MailboxAddress.Parse("bookflix247@gmail.com"));
                 mail.To.Add(MailboxAddress.Parse(email));
                 mail.Subject = subject;
                 mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
 
                 using var smtp = new SmtpClient();
                 smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Authenticate("bookflix247@gmail.com", "jnmk rnop elet trcp");
                 smtp.Send(mail);
                 smtp.Disconnect(true);
 

@@ -5,6 +5,10 @@ using BookFlix.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace BookFlixWeb.Areas.Customer.Controllers
 {
@@ -177,8 +181,113 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             }
 
 
+            var mailBody = $@"
+    <!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Order Confirmation</title>
+    <style>
+        body {{
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }}
+
+        .container {{
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }}
+
+        h1, p {{
+            color: #333333;
+        }}
+
+        .order-details {{
+            margin-top: 20px;
+            border-top: 1px solid #dddddd;
+            padding-top: 20px;
+        }}
+
+        .footer {{
+            margin-top: 20px;
+            text-align: center;
+            color: #999999;
+        }}
+    </style>
+</head>
+<body>
+
+    <div class=""container"">
+        <h1>Order Confirmation</h1>
+        <p>Dear {user.FirstName},</p>
+        <p>Thank you for your order. We are pleased to confirm that your order has been received and is being processed.</p>
+
+        <div class=""order-details"">
+            <h2>Order Details</h2>
+            <p><strong>Order Id:</strong> {shoppingCartVM.OrderHeader.Id}</p>
+            <p><strong>Order Date:</strong> {shoppingCartVM.OrderHeader.OrderDate}</p>
+            <p>Your ordered Items are: </p>
+            {string.Join("", myCart.Select(item => $"<li>{item.Product.Title} - {item.Count} - {item.Product.Price}Tk.</li>"))}
+
+            <p><strong>Your Total Price:</strong> {TotalPrice} </p>
+            
+        </div>
+
+        <p><strong>Address:</strong>{shoppingCartVM.OrderHeader.StreetAddress},{shoppingCartVM.OrderHeader.City}-{shoppingCartVM.OrderHeader.PostalCode}</p>
+
+        <p>For any questions or concerns, please contact our customer support.</p>
+
+        <div class=""footer"">
+            <p>Thank you for choosing BookFlix!</p>
+        </div>
+    </div>
+
+</body>
+</html>
+
+";
+
+            await SendEmailAsync(
+                user.Email,
+                "Order Successfull",
+                mailBody);
+
+
             TempData["Success"] = "Order Placed Successfully";
             return RedirectToAction("Index", "MyOrder", new { area = "Customer" });
         }
+
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            try
+            {
+                var mail = new MimeMessage();
+                mail.From.Add(MailboxAddress.Parse("bookflix247@gmail.com"));
+                mail.To.Add(MailboxAddress.Parse(email));
+                mail.Subject = subject;
+                mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
+
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("bookflix247@gmail.com", "jnmk rnop elet trcp");
+                smtp.Send(mail);
+                smtp.Disconnect(true);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+
     }
 }
