@@ -8,12 +8,17 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BookFlix.Models.ViewModels;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace BookFlixWeb.Areas.Identity.Pages.Account
 {
@@ -71,7 +76,7 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
+                await SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
@@ -80,6 +85,30 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            try
+            {
+                var mail = new MimeMessage();
+                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.To.Add(MailboxAddress.Parse(email));
+                mail.Subject = subject;
+                mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
+
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Send(mail);
+                smtp.Disconnect(true);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

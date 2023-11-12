@@ -20,6 +20,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+
 using Microsoft.Extensions.Logging;
 
 
@@ -205,7 +210,7 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    await SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -234,6 +239,30 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            try
+            {
+                var mail = new MimeMessage();
+                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.To.Add(MailboxAddress.Parse(email));
+                mail.Subject = subject;
+                mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
+
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Send(mail);
+                smtp.Disconnect(true);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private ApplicationUser CreateUser()

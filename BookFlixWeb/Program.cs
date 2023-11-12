@@ -18,7 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options=>options.UseSqlServe
 
 builder.Services.Configure<StripeSetting>(builder.Configuration.GetSection("Stripe"));
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddDefaultTokenProviders()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true).AddDefaultTokenProviders()
     .AddDefaultUI()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();

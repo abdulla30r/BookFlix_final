@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 
 namespace BookFlixWeb.Areas.Identity.Pages.Account
 {
@@ -77,13 +81,37 @@ namespace BookFlixWeb.Areas.Identity.Pages.Account
                 pageHandler: null,
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
-            await _emailSender.SendEmailAsync(
+            await SendEmailAsync(
                 Input.Email,
                 "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
             ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
             return Page();
+        }
+
+        private async Task<bool> SendEmailAsync(string email, string subject, string confirmLink)
+        {
+            try
+            {
+                var mail = new MimeMessage();
+                mail.From.Add(MailboxAddress.Parse("abdulla30r@gmail.com"));
+                mail.To.Add(MailboxAddress.Parse(email));
+                mail.Subject = subject;
+                mail.Body = new TextPart(TextFormat.Html) { Text = confirmLink };
+
+                using var smtp = new SmtpClient();
+                smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate("abdulla30r@gmail.com", "gxkx xjts uhra kplm");
+                smtp.Send(mail);
+                smtp.Disconnect(true);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

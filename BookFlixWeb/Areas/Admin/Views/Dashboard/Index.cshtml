@@ -3,62 +3,73 @@
 <br />
 <br />
 <div class="container">
-<div class="col-6">
-    <h2 class="text-primary">Sale List</h2>
-</div>
-<table class="table table-bordered table-striped" style="margin:auto" id="tableToPrint">
-    <thead>
-        <tr>
-            <th>
-                Id
-            </th>
-            <th>Book Id</th>
-            <th>
-                Book Name
-            </th>
-            <th>Price</th>
-
-            <th>Quantity</th>
-            <th>Sale Price</th>
-            <th>Profit</th>
-
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var obj in Model)
-        {
+    <div class="col-6">
+        <h2 class="text-primary">Profit Table</h2>
+    </div>
+    <table class="table table-bordered table-striped" style="margin:auto" id="tableToPrint">
+        <thead>
             <tr>
-                <td>
-                    @obj.Id
-                </td>
-                <td>
-                    @obj.BookId
-                </td>
-                <td>
-                    @obj.BookName
-                </td>
-                <td>
-                    @obj.Price
-                </td>
-                <td>
-                    @obj.Quantity
-                </td>
-                <td>
-                    @obj.SalePrice
-                </td>
-                <td>
-                    @obj.Lav
-                </td>
-
-
+                <th>
+                    Id
+                </th>
+                <th>Book Id</th>
+                <th>
+                    Book Name
+                </th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Sale Price</th>
+                <th>Profit</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
 
-<br />
-<button class="btn btn-primary" onclick="printTable()">Print Table</button>
+        <tbody>
+            @{
+                decimal totalProfit = 0;
+            }
+            @foreach (var obj in Model)
+            {
+                <tr>
+                    <td>
+                        @obj.Id
+                    </td>
+                    <td>
+                        @obj.BookId
+                    </td>
+                    <td>
+                        @obj.BookName
+                    </td>
+                    <td>
+                        @obj.Price
+                    </td>
+                    <td>
+                        @obj.Quantity
+                    </td>
+                    <td>
+                        @obj.SalePrice
+                    </td>
+                    <td>
+                        @obj.Lav
+                        @{
+                            totalProfit += obj.Lav;
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="6" style="text-align:right"><strong>Total Profit:</strong></td>
+                <td>
+                    @totalProfit
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <br />
+    <button class="btn btn-primary" onclick="printTable()">Print Table</button>
 
 </div>
 <script>
