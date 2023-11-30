@@ -20,6 +20,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
 
+
         public HomeController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
@@ -34,14 +35,12 @@ namespace BookFlixWeb.Areas.Customer.Controllers
 
             if (category == null)
             {
-                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
-                .OrderBy(x => Guid.NewGuid());
+                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             }
             else
             {
                 objProductList = _unitOfWork.Product
-                .GetAll(includeProperties: "Category").Where(p => p.Category.Name == category)
-                .OrderBy(x => Guid.NewGuid());
+                .GetAll(includeProperties: "Category").Where(p => p.Category.Name == category);
             }
 
             IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();

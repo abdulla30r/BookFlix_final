@@ -15,6 +15,7 @@ namespace BookFlix.Models.ViewModels
         public IEnumerable<Product> NewArrival { get; set; }
 
         public IEnumerable<Category> CategoryList { get; set; }
+        public PaginationInfo PaginationInfo { get; set; } // Add this line
 
 
     }
