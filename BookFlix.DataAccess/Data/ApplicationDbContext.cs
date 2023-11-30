@@ -29,5 +29,7 @@ namespace BookFlix.DataAccess.Data
         public DbSet<Sale> Sales { get; set; }
 
         public DbSet<Profit> Profits { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
+
     }
 }

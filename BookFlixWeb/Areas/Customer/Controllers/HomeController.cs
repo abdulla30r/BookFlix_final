@@ -1,4 +1,5 @@
-﻿using BookFlix.DataAccess.Repository;
+﻿using BookFlix.DataAccess.Data;
+using BookFlix.DataAccess.Repository;
 using BookFlix.DataAccess.Repository.IRepository;
 using BookFlix.Models;
 using BookFlix.Models.ViewModels;
@@ -17,23 +18,38 @@ namespace BookFlixWeb.Areas.Customer.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager)
+        public HomeController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager,ApplicationDbContext context)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _context = context;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(string? category)
         {
-            IEnumerable<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
-                .OrderBy(x => Guid.NewGuid());
+            IEnumerable<Product> objProductList;
 
+            if (category == null)
+            {
+                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
+                .OrderBy(x => Guid.NewGuid());
+            }
+            else
+            {
+                objProductList = _unitOfWork.Product
+                .GetAll(includeProperties: "Category").Where(p => p.Category.Name == category)
+                .OrderBy(x => Guid.NewGuid());
+            }
+
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
 
             var indexModel = new IndexModel
             {
-                ProductList = objProductList,  
+                ProductList = objProductList,
+                CategoryList = objCategoryList,
             };
 
             return View(indexModel);
@@ -44,6 +60,8 @@ namespace BookFlixWeb.Areas.Customer.Controllers
         {
             string searchQuery = Request.Form["searchQuery"];
             IEnumerable<Product> objProductList;
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+
 
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -59,6 +77,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             var indexModel = new IndexModel
             {
                 ProductList = objProductList,
+                CategoryList = objCategoryList,
             };
 
             return View("Index", indexModel);
@@ -131,7 +150,41 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             _unitOfWork.Save();
             TempData["Success"] = "Added To Cart";
             return RedirectToAction("Index");
-        } 
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> sendMessageAsync()
+        {
+            string msg = Request.Form["msg"];
+            IEnumerable<Product> objProductList;
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+
+
+
+            objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+
+            var indexModel = new IndexModel
+            {
+                ProductList = objProductList,
+                CategoryList = objCategoryList,
+            };
+
+            if(msg != null)
+            {
+                ApplicationUser applicationUser = await _userManager.GetUserAsync(User);
+                Feedback feedback = new Feedback();
+                feedback.Message = msg;
+                feedback.UserName = applicationUser.FirstName;
+
+                _context.Feedbacks.Add(feedback);
+                _context.SaveChanges();
+                TempData["Success"] = "Thanks for your feedback";
+            }
+            return View("Index", indexModel);
+        }
+
 
         public IActionResult AboutUs()
         {
