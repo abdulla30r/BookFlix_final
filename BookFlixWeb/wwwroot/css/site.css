@@ -18,11 +18,14 @@ html {
     min-height: 100%;
 }
 
-body {
-    margin-bottom: 80px;
-}
 
 a{
     text-decoration:none;
     color:black;
+}
+
+
+.myP{
+    margin-bottom:-2px;
+    text-align: center;
 }

@@ -66,35 +66,52 @@
     </header>
 
     <div>
-        <main role="main" style="margin-top:-20px;margin-bottom:160px;">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <a asp-action="Index" asp-area="Customer" asp-controller="Home">
-                        <h4 class="text-primary mt-2"><span class="text-primary">BOOK</span><span style="color:red;">FLIX</span></h4>
-                    </a>
-                </div>
-                <div class="col-md-4 text-center">
-                    <h5 class="mt-2">Contact Us</h5>
-                    <address style="margin-top:-25px;">623 Harrison St., 2nd Floor, San Francisco, CA 94107</address>
-                    <div style="margin-top:-50px;">
-                        Phone: +8801813830083
+    <br />
+
+    <div class="border-top text-white " style="background-color:#1B1212		;">
+
+        <br  />
+            <div class="container" style="width:75%; margin:auto;">
+                
+                <div class="row">
+                    <div class="col-md-3 text-center ">
+                        <a asp-action="Index" asp-area="Customer" asp-controller="Home">
+                            <img src="~/images/footerLogo.png" width="130px" />
+                        </a>
                     </div>
-                    <div style="margin-top:-40px; margin-bottom:-20px">
-                        Email: hello@BookFlix.com
+
+                    <div class="col-lg-9">
+                    <div class="row">
+
+                        <div class="col-md-8 text-center ">
+                            <a style="padding:5px;" href="#"><i class="bi bi-facebook"></i></a>
+                            <a style="padding:5px;" href="#"><i class="bi bi-twitter"></i></a>
+                            <a style="padding:5px;" href="#"><i class="bi bi-instagram"></i></a>
+                        </div>
+
+                        <div class="col-md-4 text-end">
+                            <div>
+                                <p class="myP"><i class="bi bi-geo-alt-fill"></i> Kuet, Fulbari Gate, Khulna</p>
+                                <p class="myP"><i class="bi bi-telephone-fill"></i> 017xxxxxxxxxxx</p>
+                                <p class="myP"><i class="bi bi-envelope-fill"></i> bookflix247@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    
                     </div>
                 </div>
-            </div>
+
+                <div class="text-center" style="padding-bottom:20px;"><p class="myP">Copyright 2023 - All right reserved.</p></div>
         </div>
-        <div class="text-center">
-            &copy; 2023 - All Rights Reserved
-        </div>
-    </footer>
+        
+    </div>
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
