@@ -9,14 +9,9 @@ namespace BookFlix.Models.ViewModels
     public class IndexModel
     {
         public IEnumerable<Product> ProductList { get; set; }
-        public IEnumerable<ProductCountViewModel> BestSeller {  get; set; }
-        public IEnumerable<Product> Featured { get; set; }
 
-        public IEnumerable<Product> NewArrival { get; set; }
 
         public IEnumerable<Category> CategoryList { get; set; }
-        public PaginationInfo PaginationInfo { get; set; } // Add this line
-
 
     }
 }

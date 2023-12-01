@@ -1,0 +1,160 @@
+﻿<div class="row justify-content-center">
+    <div class="col-10">
+        <div id="searchContainer" class="mt-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search">
+        </div>
+        <div id="categoryFilter" class="mt-3">
+            <!-- Categories buttons will be added here dynamically -->
+        </div>
+    </div>
+</div>
+
+
+
+
+<div id="ajaxResponseContainer" class="row"></div>
+<div id="paginationContainer" class="mt-3 d-flex justify-content-center"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<script>
+    var currentPage = 1;
+    var itemsPerPage = 4;
+    var result; // Declare the result variable here
+    var selectedCategory = null;
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("getProduct", "Home", new { area = "Customer" })',
+        dataType: "json",
+        success: function (data) {
+            result = data;
+            displayProducts(result.value.productList, currentPage, itemsPerPage);
+            addPagination(result.value.productList.length, itemsPerPage);
+            addCategoryButtons(result.value.categoryList);
+        },
+        error: function (req, status, error) {
+            console.log(status);
+        }
+    });
+
+    function displayProducts(products, page, pageSize) {
+        var container = $('#ajaxResponseContainer');
+        container.empty();
+
+        // Filter products based on the selected category
+        var filteredProducts = products;
+        if (selectedCategory) {
+            filteredProducts = products.filter(function (product) {
+                return product.category.name === selectedCategory;
+            });
+        }
+
+        var startIndex = (page - 1) * pageSize;
+        var endIndex = startIndex + pageSize;
+        var displayedProducts = filteredProducts.slice(startIndex, endIndex);
+
+        displayedProducts.forEach(function (product) {
+            var cardHtml = `
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="/Customer/Home/Details/${product.id}">
+                            <div class="mb-4" style="text-align:center">
+                                <div class="image-container">
+                                    <!-- You can add an image here if needed -->
+                                </div>
+                                <p>${product.title}</p>
+                                <p style="margin-top:-20px"><strong>Tk. </strong>${product.price}</p>
+                            </div>
+                        </a>
+                    </div>
+                `;
+
+            container.append(cardHtml);
+        });
+    }
+
+    function addPagination(totalItems, itemsPerPage) {
+        var totalPages = Math.ceil(totalItems / itemsPerPage);
+        var paginationContainer = $('#paginationContainer');
+        paginationContainer.empty();
+
+        var paginationHtml = '<ul class="pagination">';
+        for (var i = 1; i <= totalPages; i++) {
+            paginationHtml += `<li class="page-item ${i === 1 ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        paginationHtml += '</ul>';
+
+        paginationContainer.html(paginationHtml);
+
+        paginationContainer.on('click', 'a', function (e) {
+            e.preventDefault();
+            var page = parseInt($(this).data('page'));
+            if (!isNaN(page)) {
+                currentPage = page;
+                displayProducts(result.value.productList, currentPage, itemsPerPage);
+                updatePagination(page);
+            }
+        });
+    }
+
+    function updatePagination(activePage) {
+        $('#paginationContainer li').removeClass('active');
+        $(`#paginationContainer li:has(a[data-page="${activePage}"])`).addClass('active');
+    }
+
+    // Auto-search functionality
+    $('#searchInput').on('input', function () {
+        var searchQuery = $(this).val().toLowerCase();
+        var filteredProducts = result.value.productList.filter(function (product) {
+            return product.title.toLowerCase().includes(searchQuery);
+        });
+
+        displayProducts(filteredProducts, 1, itemsPerPage);
+        addPagination(filteredProducts.length, itemsPerPage);
+        currentPage = 1; // Reset current page after search
+        updatePagination(1);
+    });
+
+    // Add category buttons
+    function addCategoryButtons(categories) {
+        var categoryFilter = $('#categoryFilter');
+        var categoryButtonsHtml = '<div>';
+        categoryButtonsHtml += '<button type="button" class="btn btn-outline-secondary rounded mb-2 active" style="margin-right:10px; data-category="all">All</button>';
+
+        categories.forEach(function (category) {
+            categoryButtonsHtml += `<button type="button" class="btn btn-outline-secondary rounded mb-2" style="margin-right:10px;" data-category="${category.name}">${category.name}</button>`;
+        });
+
+        categoryButtonsHtml += '</div>';
+        categoryFilter.html(categoryButtonsHtml);
+
+        // Handle category button click events
+        categoryFilter.on('click', 'button', function () {
+            var category = $(this).data('category');
+            selectedCategory = category === 'all' ? null : category;
+            displayProducts(result.value.productList, 1, itemsPerPage);
+            addPagination(getFilteredProductsCount(), itemsPerPage);
+            updateCategoryButtons(category);
+        });
+    }
+
+
+
+    function updateCategoryButtons(activeCategory) {
+        $('#categoryFilter button').removeClass('active');
+        $(`#categoryFilter button[data-category="${activeCategory}"]`).addClass('active');
+    }
+
+    // Helper function to get the count of filtered products
+    function getFilteredProductsCount() {
+        if (selectedCategory) {
+            return result.value.productList.filter(function (product) {
+                return product.category.name === selectedCategory;
+            }).length;
+        } else {
+            return result.value.productList.length;
+        }
+    }
+</script>

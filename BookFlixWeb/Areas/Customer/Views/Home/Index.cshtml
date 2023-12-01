@@ -1,5 +1,4 @@
-﻿@using BookFlix.Models.ViewModels;
-@model IndexModel
+﻿
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -11,18 +10,7 @@
 
 <div class="container">
   
-    <div class="row justify-content-center">
-        <div class="col-10">
-            <form method="post" asp-action="Search">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="searchQuery" placeholder="Search products">
-                    <div class="input-group-append ms-3">
-                        <button class="btn btn-outline-secondary" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+    
 
    
     <div class="container mb-3">
@@ -55,32 +43,28 @@
     </div>
 
     
-    <div class="container mb-5">
-        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary rounded mb-2">All Products</a>
-            @foreach (var category in Model.CategoryList)
-            {
-            <a href="@Url.Action("Index", "Home", new { category = category.Name })" class="btn btn-secondary rounded mb-2">@category.Name</a>
-            }
-        <hr />
+    <div style="width:80%;margin:auto">
+        <div id="searchContainer" class="mt-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search">
+        </div>
+    </div>
+
+    <div id="loadingSpinner" class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div id="categoryFilter" class="mt-3">
+            
+        </div>
 
     </div>
 
-        <div class="row">
-        @foreach (var obj in Model.ProductList)
-        {
-            <div class="col-6 col-md-4 col-lg-3">
-                <a href="@Url.Action("Details", "Home", new { id = obj.Id })">
-                    <div class="mb-4" style="text-align:center">
-                        <div class="image-container">
-                            <img src="@obj.ImageUrl" class="card-img-top image" style="height:200px;width:150px;" alt="Product Image">
-                        </div>
-                        <p>@obj.Title</p>
-                        <p style="margin-top:-20px"><strong>Tk. </strong>@(obj.Price)</p>
-                    </div>
-                </a>
-            </div>
-        }
-    </div>
+    <div id="ajaxResponseContainer" class="row"></div>
+    <div id="paginationContainer" class="mt-3 d-flex justify-content-center"></div>
    
    
 </div>
@@ -95,13 +79,12 @@
 }
 else
 {
-    
     <div class="container bg-white p-3 rounded shadow-lg mb-4" style="margin-top: 50px; width:80%;">
         <div class="row justify-content-center">
             <div class="col-12">
-                <form method="post" asp-action="sendMessage">
+                <form method="post" asp-action="sendMessage" onsubmit="return validateForm()">
                     <div class="input-group">
-                        <input type="text" class="form-control" name="msg" placeholder="Give feedback">
+                        <input type="text" class="form-control" name="msg" placeholder="Give feedback" required>
                         <div class="input-group-append ms-3">
                             <button class="btn btn-outline-secondary" type="submit">Send</button>
                         </div>
@@ -134,8 +117,6 @@ else
         </div>
     </div>
 </div>
-
-
 
 
 <style>
@@ -177,7 +158,169 @@ else
     });
 </script>
 
+
+
 <script src="~/js/script.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    function validateForm() {
+        var msgInput = document.forms[0]["msg"];
+        if (msgInput.checkValidity() === false) {
+            // Display a custom validation message or perform other actions
+            alert("Please enter feedback before submitting.");
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<script>
+    var currentPage = 1;
+    var itemsPerPage = 8;
+    var result; 
+    var selectedCategory = null;
+    var loadingSpinner = $('#loadingSpinner');
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("getProduct", "Home", new { area = "Customer" })',
+        dataType: "json", 
+        beforeSend: function () {
+            loadingSpinner.show();
+        },
+        success: function (data) {
+            result = data;
+            displayProducts(result.value.productList, currentPage, itemsPerPage);
+            addPagination(result.value.productList.length, itemsPerPage);
+            addCategoryButtons(result.value.categoryList);
+        },
+        error: function (req, status, error) {
+            console.log(status);
+        },
+        complete: function () {
+            loadingSpinner.hide();
+        }
+    });
+
+    function displayProducts(products, page, pageSize) {
+        var container = $('#ajaxResponseContainer');
+        container.empty();
+
+        var filteredProducts = products;
+        if (selectedCategory) {
+            filteredProducts = products.filter(function (product) {
+                return product.category.name === selectedCategory;
+            });
+        }
+
+        var startIndex = (page - 1) * pageSize;
+        var endIndex = startIndex + pageSize;
+        var displayedProducts = filteredProducts.slice(startIndex, endIndex);
+
+        displayedProducts.forEach(function (product) {
+            var cardHtml = `
+                        <div class="col-6 col-md-4 col-lg-3 mt-2">
+                            <a href="/Customer/Home/Details/${product.id}">
+                                <div class="mb-4" style="text-align:center">
+                                    <div class="image-container">
+                                            <img src="${product.imageUrl}" class="card-img-top image" style = "height:200px;width:150px;" alt = "Product Image" >
+                                    </div>
+                                    <p>${product.title}</p>
+                                    <p style="margin-top:-20px"><strong>Tk. </strong>${product.price}</p>
+                                </div>
+                            </a>
+                        </div>
+                    `;
+
+
+            container.append(cardHtml);
+        });
+    }
+
+    function addPagination(totalItems, itemsPerPage) {
+        var totalPages = Math.ceil(totalItems / itemsPerPage);
+        var paginationContainer = $('#paginationContainer');
+        paginationContainer.empty();
+
+        var paginationHtml = '<ul class="pagination" style="font-size:15px">';
+        for (var i = 1; i <= totalPages; i++) {
+            paginationHtml += `<li class="page-item ${i === 1 ? 'active' : ''}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+        }
+        paginationHtml += '</ul>';
+
+        paginationContainer.html(paginationHtml);
+
+        paginationContainer.on('click', 'a', function (e) {
+            e.preventDefault();
+            var page = parseInt($(this).data('page'));
+            if (!isNaN(page)) {
+                currentPage = page;
+                displayProducts(result.value.productList, currentPage, itemsPerPage);
+                updatePagination(page);
+            }
+        });
+    }
+
+    function updatePagination(activePage) {
+        $('#paginationContainer li').removeClass('active');
+        $(`#paginationContainer li:has(a[data-page="${activePage}"])`).addClass('active');
+    }
+
+  
+    $('#searchInput').on('input', function () {
+        var searchQuery = $(this).val().toLowerCase();
+        var filteredProducts = result.value.productList.filter(function (product) {
+            return product.title.toLowerCase().includes(searchQuery);
+        });
+
+        displayProducts(filteredProducts, 1, itemsPerPage);
+        addPagination(filteredProducts.length, itemsPerPage);
+        currentPage = 1; 
+        updatePagination(1);
+    });
+
+    function addCategoryButtons(categories) {
+        var categoryFilter = $('#categoryFilter');
+        var categoryButtonsHtml = '<div >';
+        categoryButtonsHtml += '<button type="button" class="btn btn-outline-secondary rounded mb-2 active" style="margin-right:10px;" data-category="all">All</button>';
+
+        categories.forEach(function (category) {
+            categoryButtonsHtml += `<button type="button" class="btn btn-outline-secondary rounded mb-2" style="margin-right:10px;" data-category="${category.name}">${category.name}</button>`;
+        });
+
+        categoryButtonsHtml += '</div>';
+        categoryFilter.html(categoryButtonsHtml);
+
+        
+        categoryFilter.on('click', 'button', function () {
+            var category = $(this).data('category');
+            selectedCategory = category === 'all' ? null : category;
+            displayProducts(result.value.productList, 1, itemsPerPage);
+            addPagination(getFilteredProductsCount(), itemsPerPage);
+            updateCategoryButtons(category);
+        });
+    }
+
+    $('[data-category="all"]').click();
+
+
+    function updateCategoryButtons(activeCategory) {
+        $('#categoryFilter button').removeClass('active');
+        $(`#categoryFilter button[data-category="${activeCategory}"]`).addClass('active');
+    }
+
+
+    function getFilteredProductsCount() {
+        if (selectedCategory) {
+            return result.value.productList.filter(function (product) {
+                return product.category.name === selectedCategory;
+            }).length;
+        } else {
+            return result.value.productList.length;
+        }
+    }
+</script>
+
+
 

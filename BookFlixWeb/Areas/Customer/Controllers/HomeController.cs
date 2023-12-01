@@ -28,58 +28,35 @@ namespace BookFlixWeb.Areas.Customer.Controllers
             _context = context;
         }
 
+
+
+        [HttpGet]
+        public IActionResult getProduct()
+        {
+            IEnumerable<Product> objProductList;
+
+            objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+
+            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
+
+            var indexModel = new IndexModel
+            {
+                ProductList = objProductList,
+                CategoryList = objCategoryList,
+            };
+
+            return new JsonResult(Ok(indexModel));
+        }
+
+
         [HttpGet]
         public IActionResult Index(string? category)
         {
-            IEnumerable<Product> objProductList;
-
-            if (category == null)
-            {
-                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
-            }
-            else
-            {
-                objProductList = _unitOfWork.Product
-                .GetAll(includeProperties: "Category").Where(p => p.Category.Name == category);
-            }
-
-            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
-
-            var indexModel = new IndexModel
-            {
-                ProductList = objProductList,
-                CategoryList = objCategoryList,
-            };
-
-            return View(indexModel);
+            
+            return View();
         }
 
-        [HttpPost]
-        public IActionResult Search()
-        {
-            string searchQuery = Request.Form["searchQuery"];
-            IEnumerable<Product> objProductList;
-            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
-
-
-            if (string.IsNullOrWhiteSpace(searchQuery))
-            {
-                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
-            }
-            else
-            {
-                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
-                .Where(p => p.Title.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var indexModel = new IndexModel
-            {
-                ProductList = objProductList,
-                CategoryList = objCategoryList,
-            };
-
-            return View("Index", indexModel);
-        }
+ 
 
         //get
         public IActionResult Details(int? id)
@@ -161,19 +138,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
         public async Task<IActionResult> sendMessageAsync()
         {
             string msg = Request.Form["msg"];
-            IEnumerable<Product> objProductList;
-            IEnumerable<Category> objCategoryList = _unitOfWork.Category.GetAll();
-
-
-
-            objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
-
-            var indexModel = new IndexModel
-            {
-                ProductList = objProductList,
-                CategoryList = objCategoryList,
-            };
-
+           
             if(msg != null)
             {
                 ApplicationUser applicationUser = await _userManager.GetUserAsync(User);
@@ -185,11 +150,16 @@ namespace BookFlixWeb.Areas.Customer.Controllers
                 _context.SaveChanges();
                 TempData["Success"] = "Thanks for your feedback";
             }
-            return View("Index", indexModel);
+            return View("Index");
         }
 
 
         public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult Privacy()
         {
             return View();
         }
