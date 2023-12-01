@@ -103,7 +103,12 @@ namespace BookFlixWeb.Areas.Customer.Controllers
         public async Task<IActionResult> Details(ShoppingCart shoppingCart)
         {
             ApplicationUser applicationUser = await _userManager.GetUserAsync(User);
+            if (User.IsInRole("Admin"))
+            {
+                TempData["Error"] = "Admin can't buy Products";
+                return RedirectToAction("Index");
 
+            }
             shoppingCart.CustomerId = applicationUser.Id;
 
             ShoppingCart cartFromDb = _unitOfWork.ShoppingCart.GetFirstOrDefault(u => u.CustomerId == applicationUser.Id && u.ProductId == shoppingCart.ProductId);
