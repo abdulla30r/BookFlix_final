@@ -64,8 +64,7 @@ namespace BookFlixWeb.Areas.Customer.Controllers
 
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
-                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category")
-               .OrderBy(x => Guid.NewGuid());
+                objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             }
             else
             {
