@@ -16,13 +16,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/js/" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/BookFlixWeb.styles.css" asp-append-version="true" />
+    <link rel="icon" href="~/images/favicon.png" type="image/png">
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom bg-white box-shadow mb-3">
             <div class="container-fluid container">
                 <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">
-                    Book<strong style="color:red;">Flix</strong>
+                    <img src="~/images/logo.png" width="150px" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +57,7 @@
                                 <a class="nav-link text-dark" asp-area="Admin" asp-controller="ManageOrder" asp-action="Index">Manage Order</a>
                             </li>
                         }
+                        
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
@@ -73,7 +76,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <a asp-action="Index" asp-area="Customer" asp-controller="Home">
-                        <h4 class="text-primary mt-2"><span class="text-primary">book</span><span style="color:red;">Flix</span></h4>
+                        <h4 class="text-primary mt-2"><span class="text-primary">BOOK</span><span style="color:red;">FLIX</span></h4>
                     </a>
                 </div>
                 <div class="col-md-4 text-center">

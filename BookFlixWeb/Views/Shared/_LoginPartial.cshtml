@@ -16,9 +16,9 @@
                 </a>
             </li>
         }
-        
 
-        <li class="nav-item">
+
+        <li class="nav-item dropdown">
             <div class="d-flex align-items-center">
                 @if (string.IsNullOrEmpty(UserManager.GetUserAsync(User).Result.ImageUrl))
                 {
@@ -28,8 +28,28 @@
                 {
                     <img src="@UserManager.GetUserAsync(User).Result.ImageUrl" class="rounded-circle mr-2" alt="User Image" style="width: 32px; height: 32px;">
                 }
-                <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@UserManager.GetUserAsync(User).Result.FirstName
-                </a>
+
+
+
+                <a class="nav-link dropdown-toggle text-dark" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">@UserManager.GetUserAsync(User).Result.FirstName</a>
+                
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="~/Identity/Account/Manage">Profile</a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="~/Identity/Account/Manage/Email">Email</a>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="~/Identity/Account/Manage/ChangePassword">Password</a>
+                    </li>
+
+                </ul>
+
+
+
             </div>
         </li>
         <li class="nav-item">
